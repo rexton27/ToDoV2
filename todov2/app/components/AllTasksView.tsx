@@ -78,7 +78,7 @@ export default function AllTasksView({ userId, onViewCompleted, onAddTask }: Pro
         </p>
         <button
           onClick={onAddTask}
-          className="px-4 py-2 rounded-xl bg-violet-600 hover:bg-violet-700 text-white text-sm font-medium transition-colors"
+          className="px-4 py-2 rounded-xl bg-violet-500 hover:bg-violet-600 text-white text-sm font-medium transition-colors duration-200"
         >
           + Add task
         </button>
@@ -95,7 +95,7 @@ export default function AllTasksView({ userId, onViewCompleted, onAddTask }: Pro
           {["Task", "Time", "Tag", ""].map((h, i) => (
             <span
               key={i}
-              className="text-[10px] font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider"
+              className="text-[10px] font-semibold text-stone-400 dark:text-zinc-500 uppercase tracking-wider"
             >
               {h}
             </span>
@@ -130,12 +130,12 @@ export default function AllTasksView({ userId, onViewCompleted, onAddTask }: Pro
                     }
                   }}
                   autoFocus
-                  className="text-sm font-medium text-zinc-800 dark:text-zinc-100 bg-transparent border-b border-violet-400 focus:outline-none pb-0.5 w-full font-[inherit]"
+                  className="text-sm font-normal text-stone-700 dark:text-zinc-100 bg-transparent border-b border-violet-400 focus:outline-none pb-0.5 w-full font-[inherit]"
                 />
               ) : (
                 <button
                   onClick={() => startEdit(todo)}
-                  className="text-left text-sm font-medium text-zinc-800 dark:text-zinc-100 hover:text-violet-600 dark:hover:text-violet-400 transition-colors truncate"
+                  className="text-left text-sm font-normal text-stone-700 dark:text-zinc-100 hover:text-violet-500 dark:hover:text-violet-400 transition-colors duration-200 truncate"
                 >
                   {todo.name}
                 </button>
@@ -149,10 +149,10 @@ export default function AllTasksView({ userId, onViewCompleted, onAddTask }: Pro
                     <button
                       key={t}
                       onClick={() => commitTime(todo, t)}
-                      className={`px-2 py-0.5 rounded-full text-xs font-medium border transition-all ${
+                      className={`px-2 py-0.5 rounded-full text-xs font-medium border transition-all duration-200 ${
                         todo.timeEstimate === t
-                          ? "bg-violet-600 border-violet-600 text-white"
-                          : "border-zinc-200 dark:border-zinc-700 text-zinc-500 hover:border-violet-400"
+                          ? "bg-violet-500 border-violet-500 text-white"
+                          : "border-stone-200 dark:border-zinc-700 text-stone-500 hover:border-violet-400"
                       }`}
                     >
                       {t === 60 ? "60+" : `${t}`}
@@ -173,10 +173,10 @@ export default function AllTasksView({ userId, onViewCompleted, onAddTask }: Pro
                       setEditingId(null);
                       setPickingTimeId(todo.id);
                     }}
-                    className={`justify-self-start px-2 py-0.5 rounded-full text-xs font-medium transition-colors ${
+                    className={`justify-self-start px-2 py-0.5 rounded-full text-xs font-medium transition-colors duration-200 ${
                       isEditing
-                        ? "bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400"
-                        : "bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 hover:bg-violet-100 dark:hover:bg-violet-900/30 hover:text-violet-600 dark:hover:text-violet-400"
+                        ? "bg-violet-100 dark:bg-violet-900/30 text-violet-500 dark:text-violet-400"
+                        : "bg-stone-100 dark:bg-zinc-800 text-stone-500 dark:text-zinc-400 hover:bg-violet-100 dark:hover:bg-violet-900/30 hover:text-violet-500 dark:hover:text-violet-400"
                     }`}
                   >
                     {timeLabel(todo.timeEstimate ?? 5)}
@@ -188,7 +188,7 @@ export default function AllTasksView({ userId, onViewCompleted, onAddTask }: Pro
                       👀 avoid
                     </span>
                   ) : (
-                    <span className="text-xs text-zinc-300 dark:text-zinc-600 text-center">—</span>
+                    <span className="text-xs text-stone-300 dark:text-zinc-600 text-center">—</span>
                   )}
 
                   {/* Actions */}
@@ -196,7 +196,7 @@ export default function AllTasksView({ userId, onViewCompleted, onAddTask }: Pro
                     <button
                       onClick={() => completeTodo(todo)}
                       title="Mark done"
-                      className="w-[22px] h-[22px] rounded-full border-[1.5px] border-zinc-300 dark:border-zinc-600 flex items-center justify-center text-zinc-300 dark:text-zinc-600 hover:border-violet-500 hover:text-violet-500 hover:bg-violet-50 dark:hover:bg-violet-950/30 transition-all flex-shrink-0"
+                      className="w-[22px] h-[22px] rounded-full border-[1.5px] border-stone-300 dark:border-zinc-600 flex items-center justify-center text-stone-300 dark:text-zinc-600 hover:border-violet-500 hover:text-violet-500 hover:bg-violet-50 dark:hover:bg-violet-950/30 transition-all duration-200 flex-shrink-0"
                     >
                       <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
                         <path
@@ -211,7 +211,7 @@ export default function AllTasksView({ userId, onViewCompleted, onAddTask }: Pro
                     <button
                       onClick={() => deleteTodo(todo)}
                       title="Delete"
-                      className="text-zinc-300 dark:text-zinc-600 hover:text-red-400 transition-colors text-base leading-none flex-shrink-0"
+                      className="text-stone-300 dark:text-zinc-600 hover:text-red-400 transition-colors duration-200 text-base leading-none flex-shrink-0"
                     >
                       ×
                     </button>
@@ -228,13 +228,13 @@ export default function AllTasksView({ userId, onViewCompleted, onAddTask }: Pro
         <div className="flex items-center justify-between">
           <button
             onClick={onAddTask}
-            className="text-sm font-medium text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 transition-colors"
+            className="text-sm font-medium text-violet-500 dark:text-violet-400 hover:text-violet-600 dark:hover:text-violet-300 transition-colors duration-200"
           >
             + Add task
           </button>
           <button
             onClick={onViewCompleted}
-            className="text-sm text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors"
+            className="text-sm text-stone-400 hover:text-stone-600 dark:hover:text-zinc-300 transition-colors duration-200"
           >
             View completed
           </button>

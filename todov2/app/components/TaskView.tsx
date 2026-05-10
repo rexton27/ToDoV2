@@ -83,10 +83,10 @@ export default function TaskView({
             <button
               key={t}
               onClick={() => setTab(t)}
-              className={`py-2.5 px-1 mr-5 text-sm font-medium border-b-2 transition-colors ${
+              className={`py-2.5 px-1 mr-5 text-sm font-medium border-b-2 transition-colors duration-200 ${
                 tab === t
-                  ? "border-violet-600 text-violet-600 dark:text-violet-400 dark:border-violet-400"
-                  : "border-transparent text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300"
+                  ? "border-violet-500 text-violet-500 dark:text-violet-400 dark:border-violet-400"
+                  : "border-transparent text-stone-400 dark:text-zinc-500 hover:text-stone-600 dark:hover:text-zinc-300"
               }`}
             >
               {t === "foryou" ? "For you" : "All tasks"}
@@ -106,10 +106,10 @@ export default function TaskView({
         ) : (
           <>
             <div>
-              <h1 className="text-xl font-semibold text-zinc-800 dark:text-zinc-100">
+              <h1 className="text-xl font-semibold text-stone-700 dark:text-zinc-100">
                 Here's what today can hold
               </h1>
-              <p className="text-sm text-zinc-400 dark:text-zinc-500 mt-1">
+              <p className="text-sm text-stone-400 dark:text-zinc-500 mt-1">
                 We're not doing everything. Just this.
               </p>
             </div>
@@ -120,16 +120,16 @@ export default function TaskView({
               </div>
             ) : tasks.length === 0 ? (
               <div className="flex flex-col items-center gap-4 py-16 text-center">
-                <p className="text-sm text-zinc-400 dark:text-zinc-500">{emptyMessage}</p>
+                <p className="text-sm text-stone-400 dark:text-zinc-500">{emptyMessage}</p>
                 <button
                   onClick={() => setShowAdd(true)}
-                  className="px-4 py-2 rounded-xl bg-violet-600 hover:bg-violet-700 text-white text-sm font-medium transition-colors"
+                  className="px-4 py-2 rounded-xl bg-violet-500 hover:bg-violet-600 text-white text-sm font-medium transition-colors duration-200"
                 >
                   + Add task
                 </button>
               </div>
             ) : (
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-4">
                 {tasks.map((todo) => (
                   <TaskCard key={todo.id} todo={todo} />
                 ))}
@@ -145,13 +145,13 @@ export default function TaskView({
           <div className="max-w-lg mx-auto px-6 py-3 flex items-center justify-between">
             <button
               onClick={() => setShowAdd(true)}
-              className="text-sm font-medium text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 transition-colors"
+              className="text-sm font-medium text-violet-500 dark:text-violet-400 hover:text-violet-600 dark:hover:text-violet-300 transition-colors duration-200"
             >
               + Add task
             </button>
             <button
               onClick={onViewCompleted}
-              className="text-sm text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors"
+              className="text-sm text-stone-400 hover:text-stone-600 dark:hover:text-zinc-300 transition-colors duration-200"
             >
               View completed
             </button>
