@@ -172,6 +172,195 @@ Dark mode is supported throughout via `dark:` Tailwind variants. The dark palett
 
 ---
 
+## Accessibility
+
+Target: **WCAG 2.2 AA** throughout.
+
+### Color contrast
+
+| Token | Hex approx | On white | On zinc-900 | Status |
+|---|---|---|---|---|
+| `stone-700` (primary text) | `#44403c` | 9.7:1 | — | ✅ AAA |
+| `stone-500` (pill text) | `#78716c` | 4.6:1 | — | ✅ AA |
+| `stone-400` (secondary text) | `#a8a29e` | 2.7:1 | — | ⚠️ Fails AA |
+| `violet-500` (accent) | `#8b5cf6` | 4.6:1 | — | ✅ AA |
+| `amber-700` (avoid badge) | `#b45309` | 4.8:1 | — | ✅ AA |
+| `zinc-100` (dark mode text) | `#f4f4f5` | — | 14.4:1 | ✅ AAA |
+
+**Known gap:** `stone-400` fails AA for normal text (2.7:1 vs required 4.5:1). It is currently used for secondary text (subtitles, tab inactive, placeholders) where lower contrast is accepted as a hierarchy signal. If this needs to be addressed, shift to `stone-500` (4.6:1). Column header labels at `text-[10px]` are decorative and exempt.
+
+### Focus styles
+
+All interactive elements must show a visible focus ring for keyboard navigation. Never use `focus:outline-none` without a replacement. The convention:
+
+```
+focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2
+```
+
+`focus-visible` (not `focus`) ensures the ring only appears for keyboard users, not on mouse click.
+
+**Currently:** Several inputs use bare `focus:outline-none` with no ring — this is a known gap to fix.
+
+### ARIA conventions
+
+| Element | Required attribute |
+|---|---|
+| Circular checkmark button | `aria-label="Mark complete"` |
+| Delete button | `aria-label="Delete task"` |
+| Time picker buttons | `aria-label="Set time to X minutes"` |
+| Tab buttons | `role="tab"` + `aria-selected` |
+| Inline name input | `aria-label="Edit task name"` |
+| Bottom sheet backdrop | `aria-hidden="true"` |
+
+### Keyboard navigation
+
+| Key | Behaviour |
+|---|---|
+| `Tab` | Moves through: task name → time pill → checkmark → delete |
+| `Enter` on task name | Opens inline edit |
+| `Enter` in edit input | Commits edit |
+| `Escape` in edit input | Cancels, restores original name |
+| `Enter` on time picker option | Selects time |
+| `Escape` on time picker | Closes picker |
+
+---
+
+## Touch targets
+
+Minimum tap target sizes per platform guidelines:
+
+| Guideline | Minimum |
+|---|---|
+| Apple HIG | 44×44pt |
+| WCAG 2.2 AA (2.5.8) | 24×24px |
+| Google Material | 48×48dp |
+
+**Current state:**
+
+| Element | Visual size | Hit area | Status |
+|---|---|---|---|
+| Circular checkmark (card) | 24×24px (`w-6 h-6`) | 24×24px | ⚠️ At WCAG minimum, below Apple |
+| Circular checkmark (table) | 22×22px | 22×22px | ⚠️ Below WCAG minimum |
+| Delete × (table) | ~16px | ~16px | ❌ Too small |
+| Time pill | Full pill width | Full pill width | ✅ |
+| Tab buttons | Full width × 40px | Full width × 40px | ✅ |
+
+**Fix:** Wrap small icon buttons in a larger invisible hit area using padding + negative margin, or increase `w-` / `h-` values. Example for checkmark:
+
+```tsx
+// Visual stays 22px, tap target becomes 44px
+<button className="relative flex items-center justify-center w-11 h-11 -m-2.5">
+  <span className="w-[22px] h-[22px] rounded-full border-[1.5px] ..." />
+</button>
+```
+
+---
+
+## Interaction states
+
+Every interactive element has five states. All must be deliberately designed — no unintended browser defaults.
+
+| State | When | Visual treatment |
+|---|---|---|
+| **Idle** | Default | As documented in color palette |
+| **Hover** | Mouse over (desktop) | Colour shift, `duration-200` |
+| **Focus** | Keyboard navigation | `ring-2 ring-violet-500 ring-offset-2` |
+| **Active / pressed** | During tap/click | Slight scale down: `active:scale-95` — to be added |
+| **Disabled** | Action not available | `opacity-50 cursor-not-allowed pointer-events-none` |
+| **Loading** | Waiting for data | Spinner: `w-5 h-5 border-2 border-violet-200 border-t-violet-500 rounded-full animate-spin` |
+| **Error** | Failed transaction | Red border + short error message below element |
+
+**Loading state:** InstantDB writes are optimistic — the UI updates before the server confirms, so most write operations feel instant. The loading spinner is used only for initial data fetches (`isLoading` from `db.useQuery`).
+
+**Error state:** Not yet designed. When an InstantDB transaction fails, the optimistic update will revert automatically. A toast or inline message should surface the error. To be designed when error handling is added.
+
+---
+
+## Responsive design
+
+The app is **mobile-first**. All base styles target small screens; `sm:` / `md:` breakpoints layer on top where needed.
+
+### Breakpoints in use
+
+| Breakpoint | Width | Behaviour |
+|---|---|---|
+| Default (mobile) | < 640px | Full-width layout, `px-6` padding |
+| `sm` (640px+) | ≥ 640px | Not yet used — single-column layout holds |
+| Content cap | `max-w-lg` (~512px) | Centred on wider screens with auto margins |
+
+### Minimum supported width
+
+**375px** (iPhone SE / small Android). Below this, the All Tasks grid (`grid-cols-[1fr_64px_64px_52px]`) may squeeze the task name column. No adaptation is currently implemented for sub-375px widths.
+
+### Mobile-specific considerations
+
+- All primary actions are reachable with one thumb in the lower two-thirds of the screen
+- The bottom sheet (AddTaskSheet) slides up from the bottom — native to mobile mental model
+- Hover states are desktop-only; on touch devices the interaction goes directly from idle → active
+- Tap target sizes: see Touch targets section above
+- Font sizes are fixed (`text-sm`, `text-xs`) — no fluid scaling. Minimum is 12px (`text-xs`) which is readable at standard mobile zoom
+
+---
+
+## Motion & reduced motion
+
+### Reduced motion preference
+
+All animations must respect `prefers-reduced-motion`. Users who enable this in their OS settings have vestibular disorders or motion sensitivity — ignoring the preference is an accessibility failure.
+
+**Rule:** Any animation with movement (translate, scale, slide) must either be disabled or replaced with a simple opacity fade under `motion-reduce:`.
+
+```tsx
+// Card fade-out on complete
+className="transition-all duration-300 motion-reduce:transition-none"
+
+// Scale-down on complete — skip the scale entirely for reduced motion
+fading ? "opacity-0 motion-reduce:opacity-100 scale-95 motion-reduce:scale-100 pointer-events-none" : ""
+```
+
+**Currently:** `motion-reduce` is not applied anywhere — this is a known gap.
+
+### Animation inventory
+
+| Animation | Type | Reduced motion behaviour |
+|---|---|---|
+| Card complete fade | `opacity-0 scale-95` | Skip scale, keep short opacity fade |
+| Hover colour shifts | `transition-colors` | Can keep — colour changes are not motion |
+| Bottom sheet slide | `translate-y` | Replace with instant appear (no translate) |
+| Loading spinner | `animate-spin` | Remove spin, show static icon or skeleton |
+
+---
+
+## Performance
+
+### Targets (Core Web Vitals)
+
+| Metric | Target | Notes |
+|---|---|---|
+| First Contentful Paint | < 1.8s | InstantDB loads client-side; auth check on first render |
+| Time to Interactive | < 3.9s | |
+| Cumulative Layout Shift | < 0.1 | Cards must not shift on data load — use `isLoading` skeleton |
+| Animation frame rate | 60fps | All transitions use GPU-compositable properties (opacity, transform) |
+| Bundle size | < 200KB gzipped | Geist + InstantDB + React — monitor with `next build` output |
+
+### Optimistic UI
+
+InstantDB applies all writes optimistically — the UI reflects the change immediately before server confirmation. This means:
+
+- No spinner needed on task complete, delete, name edit, or time change
+- If the transaction fails, InstantDB reverts the local state automatically
+- Spinners only appear on `isLoading: true` from `db.useQuery` (initial data fetch)
+
+### Large list handling
+
+The All Tasks table renders all active todos in a single pass. This is acceptable at low task counts (< 100). If task count grows significantly:
+
+- **Threshold for concern:** ~200+ rows
+- **Solution:** React virtualisation via `@tanstack/react-virtual`
+- **Not needed now** — flag for future if usage patterns suggest it
+
+---
+
 ## What we ruled out
 
 | Decision | What we ruled out | Why |
