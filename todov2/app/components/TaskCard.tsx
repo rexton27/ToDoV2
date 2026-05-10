@@ -9,26 +9,22 @@ type Todo = InstaQLEntity<AppSchema, "todos">;
 
 const TIME_OPTIONS = [5, 15, 30, 60] as const;
 
-type AnimState = "idle" | "flash" | "fading";
-
 interface Props {
   todo: Todo;
 }
 
 export default function TaskCard({ todo }: Props) {
-  const [animState, setAnimState] = useState<AnimState>("idle");
+  const [fading, setFading] = useState(false);
   const [editing, setEditing] = useState(false);
   const [editName, setEditName] = useState(todo.name);
   const [pickingTime, setPickingTime] = useState(false);
   const nameInputRef = useRef<HTMLInputElement>(null);
 
-  function handleThatCounts() {
-    setAnimState("flash");
-    setTimeout(() => setAnimState("fading"), 1200);
-    // Transact after the fade completes so InstantDB doesn't unmount mid-animation
+  function handleComplete() {
+    setFading(true);
     setTimeout(() => {
       db.transact(db.tx.todos[todo.id].update({ done: true, completedAt: Date.now() }));
-    }, 1600);
+    }, 350);
   }
 
   function handleDelete() {
@@ -50,17 +46,10 @@ export default function TaskCard({ todo }: Props) {
     setPickingTime(false);
   }
 
-  const isFlashing = animState === "flash";
-  const isFading = animState === "fading";
-
   return (
     <div
-      className={`group relative rounded-2xl overflow-hidden transition-all duration-300 ${
-        isFlashing
-          ? "bg-amber-50 dark:bg-amber-950/30 shadow-[0_1px_6px_rgba(0,0,0,0.06)]"
-          : isFading
-          ? "opacity-0 scale-95 pointer-events-none"
-          : "bg-white dark:bg-zinc-900 shadow-[0_1px_6px_rgba(0,0,0,0.06)]"
+      className={`group relative rounded-2xl bg-white dark:bg-zinc-900 shadow-[0_1px_6px_rgba(0,0,0,0.06)] overflow-hidden transition-all duration-300 ${
+        fading ? "opacity-0 scale-95 pointer-events-none" : ""
       }`}
     >
       <div className="p-5 flex flex-col gap-3">
@@ -95,28 +84,45 @@ export default function TaskCard({ todo }: Props) {
                   setEditing(true);
                   setEditName(todo.name);
                 }}
-                className="text-left text-sm font-normal text-stone-700 dark:text-zinc-100 hover:text-violet-500 dark:hover:text-violet-400 transition-colors duration-200 break-words"
+                className="text-left text-sm font-normal text-stone-700 dark:text-zinc-100 hover:text-violet-500 dark:hover:text-violet-400 transition-colors duration-200 break-words w-full"
               >
                 {todo.name}
               </button>
             )}
           </div>
 
-          {/* Delete — visible on hover */}
-          <button
-            onClick={handleDelete}
-            className="opacity-0 group-hover:opacity-100 shrink-0 w-6 h-6 flex items-center justify-center rounded-md text-zinc-300 hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all"
-            title="Delete"
-          >
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-              <path
-                d="M2 2l8 8M10 2l-8 8"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-              />
-            </svg>
-          </button>
+          {/* Actions */}
+          <div className="flex items-center gap-1.5 shrink-0">
+            <button
+              onClick={handleComplete}
+              title="Mark done"
+              className="w-6 h-6 rounded-full border-[1.5px] border-stone-300 dark:border-zinc-600 flex items-center justify-center text-stone-300 dark:text-zinc-600 hover:border-violet-500 hover:text-violet-500 hover:bg-violet-50 dark:hover:bg-violet-950/30 transition-all duration-200 flex-shrink-0"
+            >
+              <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
+                <path
+                  d="M2 6l3 3 5-5"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+            <button
+              onClick={handleDelete}
+              title="Delete"
+              className="opacity-0 group-hover:opacity-100 w-6 h-6 flex items-center justify-center rounded-md text-stone-300 hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-200"
+            >
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                <path
+                  d="M2 2l8 8M10 2l-8 8"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
 
         {/* Time badge / picker */}
@@ -137,7 +143,7 @@ export default function TaskCard({ todo }: Props) {
             ))}
             <button
               onClick={() => setPickingTime(false)}
-              className="px-2 py-1 text-xs text-zinc-400 hover:text-zinc-600"
+              className="px-2 py-1 text-xs text-stone-400 hover:text-stone-600"
             >
               ✕
             </button>
@@ -148,21 +154,6 @@ export default function TaskCard({ todo }: Props) {
             className="self-start px-2.5 py-1 rounded-full text-xs font-medium bg-stone-100 dark:bg-zinc-800 text-stone-500 dark:text-zinc-400 hover:bg-violet-100 dark:hover:bg-violet-900/30 hover:text-violet-500 dark:hover:text-violet-400 transition-colors duration-200"
           >
             {todo.timeEstimate === 60 ? "60+ min" : `${todo.timeEstimate} min`}
-          </button>
-        )}
-
-        {/* That counts button */}
-        {isFlashing ? (
-          <div className="w-full py-2.5 text-center text-sm font-semibold text-amber-600 dark:text-amber-400 animate-pulse">
-            That counts. ✨
-          </div>
-        ) : (
-          <button
-            onClick={handleThatCounts}
-            disabled={isFading}
-            className="w-full py-2.5 rounded-xl bg-stone-100 dark:bg-zinc-800 hover:bg-violet-50 dark:hover:bg-violet-900/20 text-stone-500 dark:text-zinc-400 hover:text-violet-500 dark:hover:text-violet-400 text-sm font-medium transition-all duration-200"
-          >
-            ✓ That counts.
           </button>
         )}
       </div>
