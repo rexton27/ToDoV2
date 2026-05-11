@@ -66,15 +66,21 @@ export default function AddTaskSheet({ userId, onClose }: Props) {
       <div
         className="fixed inset-0 bg-black/20 dark:bg-black/50 z-40 backdrop-blur-sm"
         onClick={onClose}
+        aria-hidden="true"
       />
 
       {/* Sheet: slides up on mobile, centered modal on md+ */}
-      <div className="fixed inset-x-0 bottom-0 md:inset-0 md:flex md:items-center md:justify-center z-50">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="add-task-title"
+        className="fixed inset-x-0 bottom-0 md:inset-0 md:flex md:items-center md:justify-center z-50"
+      >
         <div className="w-full md:max-w-sm md:mx-auto bg-white dark:bg-zinc-900 rounded-t-3xl md:rounded-2xl shadow-xl p-6 flex flex-col gap-5">
           {/* Drag handle (mobile only) */}
-          <div className="w-10 h-1 bg-zinc-200 dark:bg-zinc-700 rounded-full mx-auto md:hidden" />
+          <div className="w-10 h-1 bg-zinc-200 dark:bg-zinc-700 rounded-full mx-auto md:hidden" aria-hidden="true" />
 
-          <h2 className="text-lg font-semibold text-zinc-800 dark:text-zinc-100">
+          <h2 id="add-task-title" className="text-lg font-semibold text-stone-700 dark:text-zinc-100">
             Add a task
           </h2>
 
@@ -99,9 +105,11 @@ export default function AddTaskSheet({ userId, onClose }: Props) {
                       key={value}
                       type="button"
                       onClick={() => setTimeEstimate(value)}
-                      className={`px-3.5 py-1.5 rounded-full text-sm font-medium border transition-all ${
+                      aria-pressed={timeEstimate === value}
+                      aria-label={label}
+                      className={`px-3.5 py-1.5 rounded-full text-sm font-medium border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-1 ${
                         timeEstimate === value
-                          ? "bg-violet-600 border-violet-600 text-white"
+                          ? "bg-violet-500 border-violet-500 text-white"
                           : "border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-300 hover:border-violet-400"
                       }`}
                     >
@@ -122,7 +130,7 @@ export default function AddTaskSheet({ userId, onClose }: Props) {
                 <button
                   type="submit"
                   disabled={!name.trim() || !timeEstimate}
-                  className="flex-1 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-700 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-medium transition-colors"
+                  className="flex-1 py-2.5 rounded-xl bg-violet-500 hover:bg-violet-600 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2"
                 >
                   Next
                 </button>

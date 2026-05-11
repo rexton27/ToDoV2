@@ -73,12 +73,12 @@ export default function AllTasksView({ userId, onViewCompleted, onAddTask }: Pro
   if (todos.length === 0) {
     return (
       <div className="flex flex-col items-center gap-4 py-16 text-center">
-        <p className="text-sm text-zinc-400 dark:text-zinc-500">
+        <p className="text-sm text-stone-400 dark:text-zinc-500">
           What's quietly waiting for you?
         </p>
         <button
           onClick={onAddTask}
-          className="px-4 py-2 rounded-xl bg-violet-500 hover:bg-violet-600 text-white text-sm font-medium transition-colors duration-200"
+          className="px-4 py-2 rounded-xl bg-violet-500 hover:bg-violet-600 text-white text-sm font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2"
         >
           + Add task
         </button>
@@ -130,12 +130,13 @@ export default function AllTasksView({ userId, onViewCompleted, onAddTask }: Pro
                     }
                   }}
                   autoFocus
-                  className="text-sm font-normal text-stone-700 dark:text-zinc-100 bg-transparent border-b border-violet-400 focus:outline-none pb-0.5 w-full font-[inherit]"
+                  aria-label="Edit task name"
+                  className="text-sm font-normal text-stone-700 dark:text-zinc-100 bg-transparent border-b border-violet-400 focus:outline-none focus-visible:ring-1 focus-visible:ring-violet-400 pb-0.5 w-full font-[inherit]"
                 />
               ) : (
                 <button
                   onClick={() => startEdit(todo)}
-                  className="text-left text-sm font-normal text-stone-700 dark:text-zinc-100 hover:text-violet-500 dark:hover:text-violet-400 transition-colors duration-200 truncate"
+                  className="text-left text-sm font-normal text-stone-700 dark:text-zinc-100 hover:text-violet-500 dark:hover:text-violet-400 transition-colors duration-200 truncate focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-1 rounded-sm"
                 >
                   {todo.name}
                 </button>
@@ -149,7 +150,9 @@ export default function AllTasksView({ userId, onViewCompleted, onAddTask }: Pro
                     <button
                       key={t}
                       onClick={() => commitTime(todo, t)}
-                      className={`px-2 py-0.5 rounded-full text-xs font-medium border transition-all duration-200 ${
+                      aria-label={`Set time to ${t === 60 ? "60+ minutes" : `${t} minutes`}`}
+                      aria-pressed={todo.timeEstimate === t}
+                      className={`px-2 py-0.5 rounded-full text-xs font-medium border transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-1 ${
                         todo.timeEstimate === t
                           ? "bg-violet-500 border-violet-500 text-white"
                           : "border-stone-200 dark:border-zinc-700 text-stone-500 hover:border-violet-400"
@@ -160,7 +163,8 @@ export default function AllTasksView({ userId, onViewCompleted, onAddTask }: Pro
                   ))}
                   <button
                     onClick={() => setPickingTimeId(null)}
-                    className="text-xs text-zinc-400 hover:text-zinc-600 px-1"
+                    aria-label="Close time picker"
+                    className="text-xs text-stone-400 hover:text-stone-600 px-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-1 rounded"
                   >
                     ✕
                   </button>
@@ -173,7 +177,8 @@ export default function AllTasksView({ userId, onViewCompleted, onAddTask }: Pro
                       setEditingId(null);
                       setPickingTimeId(todo.id);
                     }}
-                    className={`justify-self-start px-2 py-0.5 rounded-full text-xs font-medium transition-colors duration-200 ${
+                    aria-label={`Time estimate: ${timeLabel(todo.timeEstimate ?? 5)}. Tap to change.`}
+                    className={`justify-self-start px-2 py-0.5 rounded-full text-xs font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-1 ${
                       isEditing
                         ? "bg-violet-100 dark:bg-violet-900/30 text-violet-500 dark:text-violet-400"
                         : "bg-stone-100 dark:bg-zinc-800 text-stone-500 dark:text-zinc-400 hover:bg-violet-100 dark:hover:bg-violet-900/30 hover:text-violet-500 dark:hover:text-violet-400"
@@ -188,30 +193,32 @@ export default function AllTasksView({ userId, onViewCompleted, onAddTask }: Pro
                       👀 avoid
                     </span>
                   ) : (
-                    <span className="text-xs text-stone-300 dark:text-zinc-600 text-center">—</span>
+                    <span className="text-xs text-stone-300 dark:text-zinc-600 text-center" aria-hidden="true">—</span>
                   )}
 
-                  {/* Actions */}
-                  <div className="flex items-center gap-1.5 justify-end">
+                  {/* Actions — larger tap targets via group/check pattern */}
+                  <div className="flex items-center justify-end">
                     <button
                       onClick={() => completeTodo(todo)}
-                      title="Mark done"
-                      className="w-[22px] h-[22px] rounded-full border-[1.5px] border-stone-300 dark:border-zinc-600 flex items-center justify-center text-stone-300 dark:text-zinc-600 hover:border-violet-500 hover:text-violet-500 hover:bg-violet-50 dark:hover:bg-violet-950/30 transition-all duration-200 flex-shrink-0"
+                      aria-label="Mark complete"
+                      className="group/check flex items-center justify-center w-10 h-10 -mr-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-1 rounded-full"
                     >
-                      <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
-                        <path
-                          d="M2 6l3 3 5-5"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
+                      <span className="w-[22px] h-[22px] rounded-full border-[1.5px] border-stone-300 dark:border-zinc-600 flex items-center justify-center text-stone-300 dark:text-zinc-600 group-hover/check:border-violet-500 group-hover/check:text-violet-500 group-hover/check:bg-violet-50 dark:group-hover/check:bg-violet-950/30 transition-all duration-200">
+                        <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
+                          <path
+                            d="M2 6l3 3 5-5"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </span>
                     </button>
                     <button
                       onClick={() => deleteTodo(todo)}
-                      title="Delete"
-                      className="text-stone-300 dark:text-zinc-600 hover:text-red-400 transition-colors duration-200 text-base leading-none flex-shrink-0"
+                      aria-label="Delete task"
+                      className="flex items-center justify-center w-10 h-10 -mr-1 text-stone-300 dark:text-zinc-600 hover:text-red-400 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:ring-offset-1 rounded-full text-lg leading-none"
                     >
                       ×
                     </button>
@@ -228,13 +235,13 @@ export default function AllTasksView({ userId, onViewCompleted, onAddTask }: Pro
         <div className="flex items-center justify-between">
           <button
             onClick={onAddTask}
-            className="text-sm font-medium text-violet-500 dark:text-violet-400 hover:text-violet-600 dark:hover:text-violet-300 transition-colors duration-200"
+            className="text-sm font-medium text-violet-500 dark:text-violet-400 hover:text-violet-600 dark:hover:text-violet-300 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-1 rounded"
           >
             + Add task
           </button>
           <button
             onClick={onViewCompleted}
-            className="text-sm text-stone-400 hover:text-stone-600 dark:hover:text-zinc-300 transition-colors duration-200"
+            className="text-sm text-stone-400 hover:text-stone-600 dark:hover:text-zinc-300 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-1 rounded"
           >
             View completed
           </button>

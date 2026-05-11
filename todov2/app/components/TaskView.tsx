@@ -78,12 +78,14 @@ export default function TaskView({
 
       {/* Tab bar */}
       <div className="bg-white dark:bg-zinc-900 border-b border-zinc-100 dark:border-zinc-800">
-        <div className="max-w-lg mx-auto px-6 flex">
+        <div role="tablist" aria-label="Task views" className="max-w-lg mx-auto px-6 flex">
           {(["foryou", "all"] as const).map((t) => (
             <button
               key={t}
+              role="tab"
+              aria-selected={tab === t}
               onClick={() => setTab(t)}
-              className={`py-2.5 px-1 mr-5 text-sm font-medium border-b-2 transition-colors duration-200 ${
+              className={`py-2.5 px-1 mr-5 text-sm font-medium border-b-2 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-1 rounded-sm ${
                 tab === t
                   ? "border-violet-500 text-violet-500 dark:text-violet-400 dark:border-violet-400"
                   : "border-transparent text-stone-400 dark:text-zinc-500 hover:text-stone-600 dark:hover:text-zinc-300"

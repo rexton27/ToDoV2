@@ -191,7 +191,7 @@ Target: **WCAG 2.2 AA** throughout.
 
 ### Focus styles
 
-All interactive elements must show a visible focus ring for keyboard navigation. Never use `focus:outline-none` without a replacement. The convention:
+All interactive elements show a visible focus ring for keyboard navigation. Never use `focus:outline-none` without a replacement. The convention:
 
 ```
 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2
@@ -199,18 +199,21 @@ focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 fo
 
 `focus-visible` (not `focus`) ensures the ring only appears for keyboard users, not on mouse click.
 
-**Currently:** Several inputs use bare `focus:outline-none` with no ring — this is a known gap to fix.
+Inline edit inputs use a tighter `ring-1 ring-violet-400` — the violet underline border already serves as the primary focus indicator, so a full ring-2 would be redundant.
 
 ### ARIA conventions
 
-| Element | Required attribute |
-|---|---|
-| Circular checkmark button | `aria-label="Mark complete"` |
-| Delete button | `aria-label="Delete task"` |
-| Time picker buttons | `aria-label="Set time to X minutes"` |
-| Tab buttons | `role="tab"` + `aria-selected` |
-| Inline name input | `aria-label="Edit task name"` |
-| Bottom sheet backdrop | `aria-hidden="true"` |
+| Element | Attribute | Status |
+|---|---|---|
+| Circular checkmark button | `aria-label="Mark complete"` | ✅ |
+| Delete button | `aria-label="Delete task"` | ✅ |
+| Time picker buttons | `aria-label="Set time to X minutes"` + `aria-pressed` | ✅ |
+| Tab buttons | `role="tab"` + `aria-selected` | ✅ |
+| Tab container | `role="tablist"` + `aria-label` | ✅ |
+| Inline name input | `aria-label="Edit task name"` | ✅ |
+| Bottom sheet | `role="dialog"` + `aria-modal` + `aria-labelledby` | ✅ |
+| Bottom sheet backdrop | `aria-hidden="true"` | ✅ |
+| Em-dash empty tag | `aria-hidden="true"` | ✅ |
 
 ### Keyboard navigation
 
@@ -239,18 +242,19 @@ Minimum tap target sizes per platform guidelines:
 
 | Element | Visual size | Hit area | Status |
 |---|---|---|---|
-| Circular checkmark (card) | 24×24px (`w-6 h-6`) | 24×24px | ⚠️ At WCAG minimum, below Apple |
-| Circular checkmark (table) | 22×22px | 22×22px | ⚠️ Below WCAG minimum |
-| Delete × (table) | ~16px | ~16px | ❌ Too small |
+| Circular checkmark (card) | 24×24px | 44×44px (`w-11 h-11` wrapper) | ✅ |
+| Circular checkmark (table) | 22×22px | 40×40px (`w-10 h-10` wrapper) | ✅ |
+| Delete × (table) | ~16px | 40×40px (`w-10 h-10` wrapper) | ✅ |
 | Time pill | Full pill width | Full pill width | ✅ |
 | Tab buttons | Full width × 40px | Full width × 40px | ✅ |
 
-**Fix:** Wrap small icon buttons in a larger invisible hit area using padding + negative margin, or increase `w-` / `h-` values. Example for checkmark:
+The pattern used: a larger transparent button wraps the visual element. The visual style (border, bg, color) lives on an inner `<span>` triggered via `group-hover` on the outer button.
 
 ```tsx
-// Visual stays 22px, tap target becomes 44px
-<button className="relative flex items-center justify-center w-11 h-11 -m-2.5">
-  <span className="w-[22px] h-[22px] rounded-full border-[1.5px] ..." />
+<button aria-label="Mark complete" className="group/check w-11 h-11 flex items-center justify-center ...">
+  <span className="w-6 h-6 rounded-full border-[1.5px] border-current group-hover/check:border-violet-500 ...">
+    <svg />
+  </span>
 </button>
 ```
 
@@ -265,7 +269,7 @@ Every interactive element has five states. All must be deliberately designed —
 | **Idle** | Default | As documented in color palette |
 | **Hover** | Mouse over (desktop) | Colour shift, `duration-200` |
 | **Focus** | Keyboard navigation | `ring-2 ring-violet-500 ring-offset-2` |
-| **Active / pressed** | During tap/click | Slight scale down: `active:scale-95` — to be added |
+| **Active / pressed** | During tap/click | Slight scale down: `active:scale-95` |
 | **Disabled** | Action not available | `opacity-50 cursor-not-allowed pointer-events-none` |
 | **Loading** | Waiting for data | Spinner: `w-5 h-5 border-2 border-violet-200 border-t-violet-500 rounded-full animate-spin` |
 | **Error** | Failed transaction | Red border + short error message below element |
@@ -318,7 +322,7 @@ className="transition-all duration-300 motion-reduce:transition-none"
 fading ? "opacity-0 motion-reduce:opacity-100 scale-95 motion-reduce:scale-100 pointer-events-none" : ""
 ```
 
-**Currently:** `motion-reduce` is not applied anywhere — this is a known gap.
+Applied via `motion-reduce:transition-none` on the card wrapper and `motion-reduce:scale-100` on the fading state to skip the scale while keeping the opacity fade.
 
 ### Animation inventory
 
