@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { db } from "@/lib/db";
 import type { Mood, TimeOption } from "@/lib/taskFilter";
 import ContextScreen from "./components/ContextScreen";
@@ -13,8 +13,18 @@ type Screen = "context" | "tasks" | "completed";
 
 export default function Home() {
   const { isLoading, user, error } = db.useAuth();
+  const status = db.useConnectionStatus();
+  const [timedOut, setTimedOut] = useState(false);
 
-  if (isLoading) return <Loader />;
+  useEffect(() => {
+    if (!isLoading) return;
+    const t = setTimeout(() => setTimedOut(true), 6000);
+    return () => clearTimeout(t);
+  }, [isLoading]);
+
+  if (isLoading && !timedOut) return <Loader status={status} />;
+  if (isLoading && timedOut)
+    return <ErrorView message={`Could not connect to database (status: ${status}). Check your internet connection and refresh.`} />;
   if (error) return <ErrorView message={error.message} />;
   if (!user) return <AuthScreen />;
   return <AppShell userId={user.id} />;
@@ -186,10 +196,11 @@ function AuthScreen() {
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-function Loader() {
+function Loader({ status }: { status: string }) {
   return (
-    <div className="min-h-screen bg-stone-50 dark:bg-zinc-950 flex items-center justify-center">
+    <div className="min-h-screen bg-stone-50 dark:bg-zinc-950 flex flex-col items-center justify-center gap-3">
       <div className="w-6 h-6 border-2 border-violet-200 border-t-violet-500 rounded-full animate-spin" />
+      <p className="text-xs text-zinc-400">{status}</p>
     </div>
   );
 }
