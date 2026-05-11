@@ -7,6 +7,8 @@ import type { Mood, TimeOption } from "@/lib/taskFilter";
 import TaskCard from "./TaskCard";
 import AddTaskSheet from "./AddTaskSheet";
 import AllTasksView from "./AllTasksView";
+import WeatherChip from "./WeatherChip";
+import { getDailyAffirmation } from "@/lib/affirmations";
 
 const MOOD_META: Record<Mood, { label: string; emoji: string }> = {
   energised: { label: "Energised", emoji: "⚡" },
@@ -67,12 +69,15 @@ export default function TaskView({
               {time === 60 ? "60+ min" : `${time} min`}
             </span>
           </div>
-          <button
-            onClick={onChangeContext}
-            className="text-xs text-zinc-400 hover:text-violet-600 dark:hover:text-violet-400 font-medium transition-colors"
-          >
-            Change
-          </button>
+          <div className="flex items-center gap-3">
+            <WeatherChip />
+            <button
+              onClick={onChangeContext}
+              className="text-xs text-zinc-400 hover:text-violet-600 dark:hover:text-violet-400 font-medium transition-colors"
+            >
+              Change
+            </button>
+          </div>
         </div>
       </header>
 
@@ -111,6 +116,9 @@ export default function TaskView({
               <h1 className="text-xl font-semibold text-stone-700 dark:text-zinc-100">
                 Here's what today can hold
               </h1>
+              <p className="text-sm italic text-stone-400 dark:text-zinc-500 mt-0.5">
+                {getDailyAffirmation()}
+              </p>
               <p className="text-sm text-stone-400 dark:text-zinc-500 mt-1">
                 We're not doing everything. Just this.
               </p>
