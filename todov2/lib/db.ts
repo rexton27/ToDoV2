@@ -1,7 +1,7 @@
 import { init } from "@instantdb/react";
 import schema from "@/instant.schema";
 
-const appId = process.env.NEXT_PUBLIC_INSTANT_APP_ID!;
+const appId = process.env.NEXT_PUBLIC_INSTANT_APP_ID ?? "d45d6422-7076-4f6c-8df9-d97a22525285";
 
 type DB = ReturnType<typeof init<typeof schema>>;
 
