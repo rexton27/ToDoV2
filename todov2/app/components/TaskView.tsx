@@ -7,6 +7,8 @@ import type { Mood, TimeOption } from "@/lib/taskFilter";
 import TaskCard from "./TaskCard";
 import AddTaskSheet from "./AddTaskSheet";
 import AllTasksView from "./AllTasksView";
+import WeatherChip from "./WeatherChip";
+import { getDailyAffirmation } from "@/lib/affirmations";
 
 const MOOD_META: Record<Mood, { label: string; emoji: string }> = {
   energised: { label: "Energised", emoji: "⚡" },
@@ -67,23 +69,28 @@ export default function TaskView({
               {time === 60 ? "60+ min" : `${time} min`}
             </span>
           </div>
-          <button
-            onClick={onChangeContext}
-            className="text-xs text-zinc-400 hover:text-violet-600 dark:hover:text-violet-400 font-medium transition-colors"
-          >
-            Change
-          </button>
+          <div className="flex items-center gap-3">
+            <WeatherChip />
+            <button
+              onClick={onChangeContext}
+              className="text-xs text-zinc-400 hover:text-violet-600 dark:hover:text-violet-400 font-medium transition-colors"
+            >
+              Change
+            </button>
+          </div>
         </div>
       </header>
 
       {/* Tab bar */}
       <div className="bg-white dark:bg-zinc-900 border-b border-zinc-100 dark:border-zinc-800">
-        <div className="max-w-lg mx-auto px-6 flex">
+        <div role="tablist" aria-label="Task views" className="max-w-lg mx-auto px-6 flex">
           {(["foryou", "all"] as const).map((t) => (
             <button
               key={t}
+              role="tab"
+              aria-selected={tab === t}
               onClick={() => setTab(t)}
-              className={`py-2.5 px-1 mr-5 text-sm font-medium border-b-2 transition-colors duration-200 ${
+              className={`py-2.5 px-1 mr-5 text-sm font-medium border-b-2 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-1 rounded-sm ${
                 tab === t
                   ? "border-violet-500 text-violet-500 dark:text-violet-400 dark:border-violet-400"
                   : "border-transparent text-stone-400 dark:text-zinc-500 hover:text-stone-600 dark:hover:text-zinc-300"
@@ -109,6 +116,9 @@ export default function TaskView({
               <h1 className="text-xl font-semibold text-stone-700 dark:text-zinc-100">
                 Here's what today can hold
               </h1>
+              <p className="text-sm italic text-stone-400 dark:text-zinc-500 mt-0.5">
+                {getDailyAffirmation()}
+              </p>
               <p className="text-sm text-stone-400 dark:text-zinc-500 mt-1">
                 We're not doing everything. Just this.
               </p>
