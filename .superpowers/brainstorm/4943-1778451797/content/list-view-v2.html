@@ -1,0 +1,299 @@
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+  .mockup-shell {
+    background: #fafaf9;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid #e4e4e7;
+    max-width: 420px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  }
+  .mock-header {
+    background: white;
+    border-bottom: 1px solid #f4f4f5;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .mood-chips { display: flex; gap: 6px; }
+  .chip { font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 99px; }
+  .chip-mood { background: #ede9fe; color: #6d28d9; }
+  .chip-time { background: #f4f4f5; color: #71717a; }
+  .change-link { font-size: 11px; color: #a1a1aa; font-weight: 500; }
+
+  .tab-bar {
+    background: white;
+    border-bottom: 1px solid #f4f4f5;
+    padding: 0 20px;
+    display: flex;
+  }
+  .tab {
+    padding: 10px 14px;
+    font-size: 12px; font-weight: 500;
+    color: #a1a1aa;
+    border-bottom: 2px solid transparent;
+  }
+  .tab.active { color: #7c3aed; border-bottom-color: #7c3aed; }
+
+  .table-header-row {
+    display: grid;
+    grid-template-columns: 1fr 60px 60px 52px;
+    padding: 6px 16px;
+    gap: 8px;
+    background: #fafaf9;
+    border-bottom: 1px solid #f4f4f5;
+  }
+  .col-label { font-size: 10px; font-weight: 600; color: #a1a1aa; text-transform: uppercase; letter-spacing: 0.05em; }
+
+  .table-row {
+    display: grid;
+    grid-template-columns: 1fr 60px 60px 52px;
+    align-items: center;
+    padding: 9px 16px;
+    gap: 8px;
+    border-bottom: 1px solid #f4f4f5;
+    background: white;
+  }
+  .table-row:last-child { border-bottom: none; }
+  .table-row.editing { background: #faf5ff; }
+
+  .task-name {
+    font-size: 13px; font-weight: 500; color: #27272a;
+    cursor: text;
+  }
+  .task-name.tappable:hover { color: #7c3aed; }
+
+  /* inline edit state */
+  .edit-input {
+    font-size: 13px; font-weight: 500; color: #27272a;
+    background: transparent;
+    border: none;
+    border-bottom: 1.5px solid #7c3aed;
+    outline: none;
+    width: 100%;
+    padding: 0 0 1px 0;
+    font-family: inherit;
+  }
+
+  .time-pill {
+    font-size: 11px; font-weight: 500;
+    background: #f4f4f5; color: #71717a;
+    padding: 3px 8px; border-radius: 99px;
+    text-align: center; white-space: nowrap;
+    cursor: pointer;
+  }
+  .time-pill:hover { background: #ede9fe; color: #7c3aed; }
+
+  .tag-avoid {
+    font-size: 11px; font-weight: 500;
+    background: #fef3c7; color: #92400e;
+    padding: 3px 8px; border-radius: 99px;
+    text-align: center;
+  }
+  .tag-none { font-size: 11px; color: #d4d4d8; text-align: center; }
+
+  .row-actions { display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
+  .check-btn {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    border: 1.5px solid #d4d4d8;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: #d4d4d8;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+  .check-btn:hover { border-color: #7c3aed; color: #7c3aed; background: #ede9fe; }
+  .check-btn svg { width: 11px; height: 11px; }
+
+  .delete-btn {
+    font-size: 14px; color: #d4d4d8; cursor: pointer; line-height: 1;
+  }
+  .delete-btn:hover { color: #f87171; }
+
+  .bottom-bar {
+    background: white;
+    border-top: 1px solid #f4f4f5;
+    padding: 10px 20px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .add-btn { font-size: 13px; font-weight: 500; color: #7c3aed; }
+  .completed-btn { font-size: 13px; color: #a1a1aa; }
+
+  .annotation {
+    font-size: 11px; color: #a1a1aa;
+    background: #f4f4f5;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-top: 8px;
+    line-height: 1.5;
+    max-width: 420px;
+  }
+  .annotation strong { color: #71717a; }
+</style>
+
+<h2>All tasks — updated table view</h2>
+<p class="subtitle">Tap name to edit inline · checkmark to complete · × to delete</p>
+
+<div style="display:flex; gap:32px; flex-wrap:wrap; justify-content:center; align-items:flex-start;">
+
+  <!-- Normal state -->
+  <div style="display:flex;flex-direction:column;gap:8px;align-items:center;">
+    <div style="font-size:11px;font-weight:600;color:#a1a1aa;text-transform:uppercase;letter-spacing:.05em;">Default</div>
+    <div class="mockup-shell">
+      <div class="mock-header">
+        <div class="mood-chips">
+          <span class="chip chip-mood">🌿 Calm</span>
+          <span class="chip chip-time">30 min</span>
+        </div>
+        <span class="change-link">Change</span>
+      </div>
+      <div class="tab-bar">
+        <div class="tab">For you</div>
+        <div class="tab active">All tasks</div>
+      </div>
+      <div class="table-header-row">
+        <span class="col-label">Task</span>
+        <span class="col-label">Time</span>
+        <span class="col-label">Tag</span>
+        <span class="col-label" style="text-align:right;"></span>
+      </div>
+      <div class="table-row">
+        <span class="task-name tappable">Review Q2 report</span>
+        <span class="time-pill">30 min</span>
+        <span class="tag-none">—</span>
+        <div class="row-actions">
+          <div class="check-btn">
+            <svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <span class="delete-btn">×</span>
+        </div>
+      </div>
+      <div class="table-row">
+        <span class="task-name tappable">Reply to Marcus</span>
+        <span class="time-pill">15 min</span>
+        <span class="tag-avoid">👀 avoid</span>
+        <div class="row-actions">
+          <div class="check-btn">
+            <svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <span class="delete-btn">×</span>
+        </div>
+      </div>
+      <div class="table-row">
+        <span class="task-name tappable">Book dentist</span>
+        <span class="time-pill">5 min</span>
+        <span class="tag-avoid">👀 avoid</span>
+        <div class="row-actions">
+          <div class="check-btn">
+            <svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <span class="delete-btn">×</span>
+        </div>
+      </div>
+      <div class="table-row">
+        <span class="task-name tappable">Draft project brief</span>
+        <span class="time-pill">60+ min</span>
+        <span class="tag-none">—</span>
+        <div class="row-actions">
+          <div class="check-btn">
+            <svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <span class="delete-btn">×</span>
+        </div>
+      </div>
+      <div class="table-row">
+        <span class="task-name tappable">Organise inbox</span>
+        <span class="time-pill">15 min</span>
+        <span class="tag-none">—</span>
+        <div class="row-actions">
+          <div class="check-btn">
+            <svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <span class="delete-btn">×</span>
+        </div>
+      </div>
+      <div class="bottom-bar">
+        <span class="add-btn">+ Add task</span>
+        <span class="completed-btn">View completed</span>
+      </div>
+    </div>
+    <div class="annotation"><strong>Tap name</strong> → edits inline<br><strong>Tap time pill</strong> → changes estimate<br><strong>○</strong> → marks done (no copy)<br><strong>×</strong> → deletes</div>
+  </div>
+
+  <!-- Editing state -->
+  <div style="display:flex;flex-direction:column;gap:8px;align-items:center;">
+    <div style="font-size:11px;font-weight:600;color:#a1a1aa;text-transform:uppercase;letter-spacing:.05em;">While editing a row</div>
+    <div class="mockup-shell">
+      <div class="mock-header">
+        <div class="mood-chips">
+          <span class="chip chip-mood">🌿 Calm</span>
+          <span class="chip chip-time">30 min</span>
+        </div>
+        <span class="change-link">Change</span>
+      </div>
+      <div class="tab-bar">
+        <div class="tab">For you</div>
+        <div class="tab active">All tasks</div>
+      </div>
+      <div class="table-header-row">
+        <span class="col-label">Task</span>
+        <span class="col-label">Time</span>
+        <span class="col-label">Tag</span>
+        <span class="col-label" style="text-align:right;"></span>
+      </div>
+      <div class="table-row">
+        <span class="task-name">Review Q2 report</span>
+        <span class="time-pill">30 min</span>
+        <span class="tag-none">—</span>
+        <div class="row-actions">
+          <div class="check-btn"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <span class="delete-btn">×</span>
+        </div>
+      </div>
+      <!-- editing row -->
+      <div class="table-row editing">
+        <input class="edit-input" value="Reply to Marcus" />
+        <span class="time-pill" style="background:#ede9fe;color:#7c3aed;">15 min</span>
+        <span class="tag-avoid">👀 avoid</span>
+        <div class="row-actions">
+          <div class="check-btn" style="border-color:#7c3aed;color:#7c3aed;background:#ede9fe;"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <span class="delete-btn">×</span>
+        </div>
+      </div>
+      <div class="table-row">
+        <span class="task-name">Book dentist</span>
+        <span class="time-pill">5 min</span>
+        <span class="tag-avoid">👀 avoid</span>
+        <div class="row-actions">
+          <div class="check-btn"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <span class="delete-btn">×</span>
+        </div>
+      </div>
+      <div class="table-row">
+        <span class="task-name">Draft project brief</span>
+        <span class="time-pill">60+ min</span>
+        <span class="tag-none">—</span>
+        <div class="row-actions">
+          <div class="check-btn"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <span class="delete-btn">×</span>
+        </div>
+      </div>
+      <div class="table-row">
+        <span class="task-name">Organise inbox</span>
+        <span class="time-pill">15 min</span>
+        <span class="tag-none">—</span>
+        <div class="row-actions">
+          <div class="check-btn"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <span class="delete-btn">×</span>
+        </div>
+      </div>
+      <div class="bottom-bar">
+        <span class="add-btn">+ Add task</span>
+        <span class="completed-btn">View completed</span>
+      </div>
+    </div>
+    <div class="annotation">Active row gets a subtle <strong>lavender tint</strong>.<br>Name becomes an inline input (Enter/blur to save).<br>Time pill turns violet to signal it's tappable.</div>
+  </div>
+
+</div>

@@ -1,0 +1,210 @@
+<style>
+  .mockup-shell {
+    background: #fafaf9;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid #e4e4e7;
+    max-width: 420px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  }
+  .mock-header {
+    background: white;
+    border-bottom: 1px solid #f4f4f5;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .mood-chips { display: flex; gap: 6px; }
+  .chip {
+    font-size: 11px; font-weight: 500;
+    padding: 4px 10px; border-radius: 99px;
+  }
+  .chip-mood { background: #ede9fe; color: #6d28d9; }
+  .chip-time { background: #f4f4f5; color: #71717a; }
+  .change-link { font-size: 11px; color: #a1a1aa; font-weight: 500; }
+
+  /* Tab toggle */
+  .tab-bar {
+    background: white;
+    border-bottom: 1px solid #f4f4f5;
+    padding: 0 20px;
+    display: flex;
+    gap: 0;
+  }
+  .tab {
+    padding: 10px 14px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #a1a1aa;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .tab.active { color: #7c3aed; border-bottom-color: #7c3aed; }
+
+  /* Table view */
+  .task-table { width: 100%; }
+  .table-row {
+    display: grid;
+    grid-template-columns: 1fr 60px 54px 32px;
+    align-items: center;
+    padding: 10px 20px;
+    gap: 8px;
+    border-bottom: 1px solid #f4f4f5;
+    background: white;
+  }
+  .table-row:last-child { border-bottom: none; }
+  .table-header-row {
+    display: grid;
+    grid-template-columns: 1fr 60px 54px 32px;
+    padding: 6px 20px;
+    gap: 8px;
+    background: #fafaf9;
+    border-bottom: 1px solid #f4f4f5;
+  }
+  .col-label { font-size: 10px; font-weight: 600; color: #a1a1aa; text-transform: uppercase; letter-spacing: 0.05em; }
+  .task-name { font-size: 13px; font-weight: 500; color: #27272a; }
+  .time-pill {
+    font-size: 11px; font-weight: 500;
+    background: #f4f4f5; color: #71717a;
+    padding: 3px 8px; border-radius: 99px;
+    text-align: center; white-space: nowrap;
+  }
+  .tag-avoid {
+    font-size: 11px; font-weight: 500;
+    background: #fef3c7; color: #92400e;
+    padding: 3px 8px; border-radius: 99px;
+    text-align: center;
+  }
+  .tag-none { font-size: 11px; color: #d4d4d8; text-align: center; }
+  .row-action { color: #d4d4d8; font-size: 14px; text-align: right; cursor: pointer; }
+  .row-action:hover { color: #f87171; }
+
+  /* Bottom bar */
+  .bottom-bar {
+    background: white;
+    border-top: 1px solid #f4f4f5;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .add-btn { font-size: 13px; font-weight: 500; color: #7c3aed; }
+  .completed-btn { font-size: 13px; color: #a1a1aa; }
+
+  .section-title { font-size: 16px; font-weight: 600; color: #18181b; margin-bottom: 4px; }
+  .section-sub { font-size: 13px; color: #71717a; margin-bottom: 20px; }
+  .pair { display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; }
+  .labeled { display: flex; flex-direction: column; gap: 8px; align-items: center; }
+  .view-label { font-size: 12px; font-weight: 600; color: #71717a; text-transform: uppercase; letter-spacing: 0.05em; }
+</style>
+
+<h2>Tab toggle — two view modes</h2>
+<p class="subtitle">The tab bar sits just below the mood/time header. Here's what each tab looks like.</p>
+
+<div class="pair">
+
+  <!-- Prioritised view -->
+  <div class="labeled">
+    <div class="view-label">Tab A — "For you"</div>
+    <div class="mockup-shell">
+      <div class="mock-header">
+        <div class="mood-chips">
+          <span class="chip chip-mood">🌿 Calm</span>
+          <span class="chip chip-time">30 min</span>
+        </div>
+        <span class="change-link">Change</span>
+      </div>
+      <div class="tab-bar">
+        <div class="tab active">For you</div>
+        <div class="tab">All tasks</div>
+      </div>
+      <div style="padding: 16px 20px; display: flex; flex-direction: column; gap: 10px; background: #fafaf9;">
+        <!-- task cards -->
+        <div style="background:white;border:1px solid #f4f4f5;border-radius:12px;padding:12px 14px;">
+          <div style="font-size:13px;font-weight:500;color:#27272a;margin-bottom:6px;">Review Q2 report</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:11px;background:#f4f4f5;color:#71717a;padding:3px 8px;border-radius:99px;">30 min</span>
+            <span style="font-size:11px;color:#a1a1aa;">✓ That counts.</span>
+          </div>
+        </div>
+        <div style="background:white;border:1px solid #f4f4f5;border-radius:12px;padding:12px 14px;">
+          <div style="font-size:13px;font-weight:500;color:#27272a;margin-bottom:4px;">👀 Reply to Marcus</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:11px;background:#f4f4f5;color:#71717a;padding:3px 8px;border-radius:99px;">15 min</span>
+            <span style="font-size:11px;color:#a1a1aa;">✓ That counts.</span>
+          </div>
+        </div>
+        <div style="font-size:11px;color:#a1a1aa;text-align:center;padding:4px 0;">2 of 7 tasks · filtered for your mood</div>
+      </div>
+      <div class="bottom-bar">
+        <span class="add-btn">+ Add task</span>
+        <span class="completed-btn">View completed</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- All tasks / table view -->
+  <div class="labeled">
+    <div class="view-label">Tab B — "All tasks"</div>
+    <div class="mockup-shell">
+      <div class="mock-header">
+        <div class="mood-chips">
+          <span class="chip chip-mood">🌿 Calm</span>
+          <span class="chip chip-time">30 min</span>
+        </div>
+        <span class="change-link">Change</span>
+      </div>
+      <div class="tab-bar">
+        <div class="tab">For you</div>
+        <div class="tab active">All tasks</div>
+      </div>
+      <div class="task-table">
+        <div class="table-header-row">
+          <span class="col-label">Task</span>
+          <span class="col-label">Time</span>
+          <span class="col-label">Tag</span>
+          <span class="col-label"></span>
+        </div>
+        <div class="table-row">
+          <span class="task-name">Review Q2 report</span>
+          <span class="time-pill">30 min</span>
+          <span class="tag-none">—</span>
+          <span class="row-action">×</span>
+        </div>
+        <div class="table-row">
+          <span class="task-name">Reply to Marcus</span>
+          <span class="time-pill">15 min</span>
+          <span class="tag-avoid">👀 avoid</span>
+          <span class="row-action">×</span>
+        </div>
+        <div class="table-row">
+          <span class="task-name">Book dentist</span>
+          <span class="time-pill">5 min</span>
+          <span class="tag-avoid">👀 avoid</span>
+          <span class="row-action">×</span>
+        </div>
+        <div class="table-row">
+          <span class="task-name">Draft project brief</span>
+          <span class="time-pill">60+ min</span>
+          <span class="tag-none">—</span>
+          <span class="row-action">×</span>
+        </div>
+        <div class="table-row">
+          <span class="task-name">Organise inbox</span>
+          <span class="time-pill">15 min</span>
+          <span class="tag-none">—</span>
+          <span class="row-action">×</span>
+        </div>
+      </div>
+      <div class="bottom-bar">
+        <span class="add-btn">+ Add task</span>
+        <span class="completed-btn">View completed</span>
+      </div>
+    </div>
+  </div>
+
+</div>
